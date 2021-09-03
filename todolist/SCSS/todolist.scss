@@ -97,6 +97,7 @@ body {
 h1 {
   text-align: center;
   color: $dark;
+  margin-top: 3rem;
 }
 
 .todoInput {
@@ -107,7 +108,7 @@ h1 {
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   padding: 4px;
-  margin: 0 auto;
+  margin: 1rem auto;
 }
 
 .todoText {
@@ -135,7 +136,6 @@ h1 {
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   margin: 0 auto;
-  margin-top: 1rem;
 }
 
 .tab {
@@ -158,8 +158,13 @@ h1 {
   li {
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
     padding: 0 1rem;
   }
+}
+
+.checkListContainer {
+  display: flex;
 }
 
 .checkList {
@@ -170,6 +175,7 @@ h1 {
 
 .todoList {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   width: 100%;

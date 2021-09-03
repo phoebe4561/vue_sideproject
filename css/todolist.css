@@ -92,6 +92,7 @@ body {
 h1 {
   text-align: center;
   color: #333;
+  margin-top: 3rem;
 }
 
 .todoInput {
@@ -107,7 +108,7 @@ h1 {
           box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   padding: 4px;
-  margin: 0 auto;
+  margin: 1rem auto;
 }
 
 .todoText {
@@ -138,7 +139,6 @@ h1 {
           box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   margin: 0 auto;
-  margin-top: 1rem;
 }
 
 .tab {
@@ -168,7 +168,17 @@ h1 {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   padding: 0 1rem;
+}
+
+.checkListContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
 }
 
 .checkList {
@@ -185,6 +195,8 @@ h1 {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;

@@ -11,60 +11,144 @@
     <link rel="stylesheet" href="/css/todolist.css" />
   </head>
   <body>
-    <div class="container">
+    <div id="app" class="container">
       <h1>Todo List</h1>
       <div class="todoInput">
-        <input class="todoText" type="text" placeholder="請輸入代辦事項" />
+        <input v-model="todoText" @keyup.enter="addTodo" class="todoText" type="text" placeholder="請輸入代辦事項" />
         <div class="inputGroup">
-          <input type="date" />
-          <input class="addBtn" type="submit" value="+" />
+          <input v-model="todoTime" @keyup.enter="addTodo" type="date" />
+          <input @click="addTodo" class="addBtn" type="submit" value="+" />
         </div>
       </div>
 
       <div class="todoContainer">
         <div class="todoTitle">
           <ul class="tab">
-            <li class="active">全部</li>
-            <li>待完成</li>
-            <li>已完成</li>
+            <li @click="visibility = 'all'" class="active">全部 ({{undoneCounter + doneCounter }})</li>
+            <li @click="visibility = 'undone'">待完成 ({{undoneCounter}})</li>
+            <li @click="visibility = 'done'">已完成 ({{doneCounter }})</li>
           </ul>
         </div>
 
         <div class="todoContent">
           <ul class="list">
-            <li>
-              <label class="checkList">
-                <input type="checkbox" class="checkBox" />
-                <div class="todoList">
-                  <span>學習vue</span>
-                  <span>2021-09-12</span>
+            <li v-for="(item, key) in filterTodo" :key="item.id">
+              <div class="checkListContainer">
+                <label class="checkList">
+                  <input v-model="item.completed" type="checkbox" class="checkBox" />
+                  <div :class="{'completed':item.completed}" class="todoList">
+                    <span>{{item.todoText}}</span>
+                    <span>{{item.todoTime}}</span>
+                  </div>
+                </label>
+                <div class="btnGroup">
+                  <button @click="editTodo(item)" class="editBtn">
+                    <span><i class="fas fa-pencil-alt"></i></span>
+                  </button>
+                  <button @click="deleteTodo(key)" class="deleteBtn">
+                    <span><i class="fas fa-times"></i></span>
+                  </button>
                 </div>
-              </label>
-              <div class="btnGroup">
-                <button class="editBtn">
-                  <span><i class="fas fa-pencil-alt"></i></span>
-                </button>
-                <button class="deleteBtn">
-                  <span><i class="fas fa-times"></i></span>
-                </button>
+              </div>
+              <div class="editContent" v-show="tempTodo.id === item.id">
+                <div class="editList">
+                  <input v-model="tempTodo.todoText" @keyup.enter="doneTodo" class="editInput" type="text" placeholder="編輯" />
+                  <div class="inputGroup">
+                    <input v-model="tempTodo.todoTime" @keyup.enter="doneTodo" type="date" />
+                    <input @click="doneTodo" class="editDoneBtn" type="button" value="編輯完成" />
+                  </div>
+                </div>
               </div>
             </li>
-            <div class="editContent">
-              <div class="editList">
-                <input class="editInput" type="text" placeholder="編輯" />
-                <div class="inputGroup">
-                  <input type="date" />
-                  <input class="editDoneBtn" type="button" value="編輯完成" />
-                </div>
-              </div>
-            </div>
           </ul>
           <div class="todoFooter">
-            <p><span class="num">0</span>個待完成項目</p>
-            <a href="#" class="deleteAllBtn">清除已完成項目</a>
+            <p><span class="num">{{undoneCounter}}</span>個待完成項目</p>
+            <a @click="deleteDoneTodo" href="#" class="deleteAllBtn">清除已完成項目</a>
           </div>
         </div>
       </div>
     </div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+      Vue.createApp({
+        data() {
+          return {
+            todoText: '',
+            todoTime: '',
+            todoList: [],
+            visibility: 'all',
+            tempTodo: [],
+            edit: false,
+          };
+        },
+        computed: {
+          filterTodo() {
+            switch (this.visibility) {
+              case 'undone':
+                return this.todoList.filter((item) => !item.completed);
+              case 'done':
+                return this.todoList.filter((item) => item.completed);
+              default:
+                return this.todoList;
+            }
+          },
+          undoneCounter() {
+            let undoneNum = this.todoList.filter((x) => !x.completed);
+            return undoneNum.length;
+          },
+          doneCounter() {
+            let doneNum = this.todoList.filter((x) => x.completed);
+            return doneNum.length;
+          },
+        },
+        methods: {
+          addTodo() {
+            const todoText = this.todoText && this.todoText.trim();
+            if (!this.todoText) {
+              alert('請輸入代辦事項');
+              return;
+            }
+            if (!this.todoTime) {
+              alert('請輸入代辦時間');
+              return;
+            }
+            this.todoList.unshift({
+              id: new Date().getTime().toString(),
+              todoText: this.todoText,
+              todoTime: this.todoTime,
+              completed: false,
+            });
+            this.todoText = '';
+          },
+          deleteTodo(key) {
+            this.todoList.splice(key, 1);
+          },
+          editTodo(item) {
+            this.tempTodo = { ...item };
+            this.edit = true;
+          },
+          doneTodo() {
+            let index = this.todoList.findIndex((x) => x.id === this.tempTodo.id);
+            this.todoList[index] = this.tempTodo;
+            this.edit = false;
+            this.tempTodo = '';
+          },
+          deleteDoneTodo() {
+            this.todoList = this.todoList.filter((item) => !item.completed);
+          },
+        },
+        mounted() {
+          this.todoList = JSON.parse(localStorage.getItem('todoList')) || [];
+        },
+        watch: {
+          todoList: {
+            handler(val) {
+              localStorage.setItem('todoList', JSON.stringify(val));
+            },
+            deep: true,
+          },
+        },
+      }).mount('#app');
+    </script>
   </body>
 </html>
