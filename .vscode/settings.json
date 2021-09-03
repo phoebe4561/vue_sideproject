@@ -1,0 +1,10 @@
+{
+  "editor.fontWeight": "normal",
+  "prettier.singleQuote": true,
+  "prettier.requireConfig": false,
+  "prettier.semi": true,
+  "prettier.printWidth": 200,
+  "prettier.trailingComma": "es5",
+  "prettier.tabWidth": 2,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
